@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "@types/express": "^4.17.11",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "ts-node-dev": "^1.1.6",
+    "tsc": "^1.20150623.0"
+  },
+  "name": "rpc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node-dev app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
