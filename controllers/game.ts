@@ -6,15 +6,15 @@ type playerMoves = {
   p3: number;
   p4: number;
 };
-interface playerVersus {
+type playerVersus = {
   p1: playerMoves;
   p2: playerMoves;
   p3: playerMoves;
   p4: playerMoves;
-}
+};
 
 export const startGame = (req: Request, res: Response) => {
-  let arr: {
+  let playerResult: {
     playerMoves: playerMoves;
     playerVersus: playerVersus;
   } = {
@@ -27,46 +27,56 @@ export const startGame = (req: Request, res: Response) => {
     },
   };
 
-  const arrItr: any = [];
+  const playerIterations: any = [];
 
   for (let j = 0; j < 50; j++) {
-    for (const playerMovesKey in arr.playerMoves) {
-      arr.playerMoves[playerMovesKey as keyof playerMoves] = Math.floor(
-        Math.random() * 3 + 1
-      );
+    for (const playerMovesKey in playerResult.playerMoves) {
+      playerResult.playerMoves[
+        playerMovesKey as keyof playerMoves
+      ] = Math.floor(Math.random() * 3 + 1);
     }
 
-    for (let key in arr.playerMoves) {
-      const _key = key as keyof playerMoves;
-      let _playerMovesKey: keyof playerMoves;
+    playerResult = result(playerResult);
 
-      if (arr.playerMoves[_key] === 1) {
-        for (let playerMovesKey in arr.playerMoves) {
-          _playerMovesKey = playerMovesKey as keyof playerMoves;
+    playerIterations[j] = JSON.parse(JSON.stringify(playerResult));
+  }
+  res.send(playerIterations);
+};
 
-          if (arr.playerMoves[_playerMovesKey] === 3) {
-            arr.playerVersus[_key][_playerMovesKey]++;
-          }
+const result = (playerResult: {
+  playerMoves: playerMoves;
+  playerVersus: playerVersus;
+}) => {
+  for (let key in playerResult.playerMoves) {
+    const _key = key as keyof playerMoves;
+    let _playerMovesKey: keyof playerMoves;
+
+    if (playerResult.playerMoves[_key] === 1) {
+      for (let playerMovesKey in playerResult.playerMoves) {
+        _playerMovesKey = playerMovesKey as keyof playerMoves;
+
+        if (playerResult.playerMoves[_playerMovesKey] === 3) {
+          playerResult.playerVersus[_key][_playerMovesKey]++;
         }
-      } else if (arr.playerMoves[_key] === 2) {
-        for (let playerMovesKey in arr.playerMoves) {
-          _playerMovesKey = playerMovesKey as keyof playerMoves;
+      }
+    } else if (playerResult.playerMoves[_key] === 2) {
+      for (let playerMovesKey in playerResult.playerMoves) {
+        _playerMovesKey = playerMovesKey as keyof playerMoves;
 
-          if (arr.playerMoves[_playerMovesKey] === 1) {
-            arr.playerVersus[_key][_playerMovesKey]++;
-          }
+        if (playerResult.playerMoves[_playerMovesKey] === 1) {
+          playerResult.playerVersus[_key][_playerMovesKey]++;
         }
-      } else if (arr.playerMoves[_key] === 3) {
-        for (let playerMovesKey in arr.playerMoves) {
-          _playerMovesKey = playerMovesKey as keyof playerMoves;
+      }
+    } else if (playerResult.playerMoves[_key] === 3) {
+      for (let playerMovesKey in playerResult.playerMoves) {
+        _playerMovesKey = playerMovesKey as keyof playerMoves;
 
-          if (arr.playerMoves[_playerMovesKey] === 2) {
-            arr.playerVersus[_key][_playerMovesKey]++;
-          }
+        if (playerResult.playerMoves[_playerMovesKey] === 2) {
+          playerResult.playerVersus[_key][_playerMovesKey]++;
         }
       }
     }
-    arrItr[j] = JSON.parse(JSON.stringify(arr));
   }
-  res.send(arrItr);
+
+  return playerResult;
 };
