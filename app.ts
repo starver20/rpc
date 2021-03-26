@@ -31,10 +31,6 @@ app.get('/game/start', async (req: Request, res: Response) => {
     arr[0].pValues[2] = Math.floor(Math.random() * 3 + 1);
     arr[0].pValues[3] = Math.floor(Math.random() * 3 + 1);
 
-    // arr[0].pValues[0] = 1;
-    // arr[0].pValues[1] = 6;
-    // arr[0].pValues[2] = 2;
-    // arr[0].pValues[3] = 3;
     for (let i = 0; i < 4; i++) {
       if (arr[0].pValues[i] === 1) {
         if (arr[0].pValues[0] === 3) {
