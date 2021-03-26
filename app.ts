@@ -1,85 +1,81 @@
 import express, { Request, Response } from 'express';
-import dotenv from 'dotenv';
 
 const app = express();
-dotenv.config();
 
-let arr: {
-  pValues: number[];
-  p: number[][];
-}[] = [
-  {
-    pValues: [0, 0, 0, 0],
-    p: [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ],
-  },
-];
-
-let arrItr: any = [];
-
+type playerMoves = {
+  p1: number;
+  p2: number;
+  p3: number;
+  p4: number;
+};
+interface playerVersus {
+  p1: playerMoves;
+  p2: playerMoves;
+  p3: playerMoves;
+  p4: playerMoves;
+}
 app.get('/', async (req: Request, res: Response) => {
   res.send('Go to /game/start');
 });
-app.get('/game/start', async (req: Request, res: Response) => {
-  for (let j = 0; j < 50; j++) {
-    arr[0].pValues[0] = Math.floor(Math.random() * 3 + 1);
-    arr[0].pValues[1] = Math.floor(Math.random() * 3 + 1);
-    arr[0].pValues[2] = Math.floor(Math.random() * 3 + 1);
-    arr[0].pValues[3] = Math.floor(Math.random() * 3 + 1);
 
-    for (let i = 0; i < 4; i++) {
-      if (arr[0].pValues[i] === 1) {
-        if (arr[0].pValues[0] === 3) {
-          arr[0].p[i][0]++;
+app.get('/game/start', async (req: Request, res: Response) => {
+  let arr: {
+    playerMoves: playerMoves;
+    playerVersus: playerVersus;
+  } = {
+    playerMoves: { p1: 0, p2: 0, p3: 0, p4: 0 },
+    playerVersus: {
+      p1: { p1: -1, p2: 0, p3: 0, p4: 0 },
+      p2: { p1: 0, p2: -1, p3: 0, p4: 0 },
+      p3: { p1: 0, p2: 0, p3: -1, p4: 0 },
+      p4: { p1: 0, p2: 0, p3: 0, p4: -1 },
+    },
+  };
+
+  const arrItr: any = [];
+
+  for (let j = 0; j < 50; j++) {
+    for (const playerMovesKey in arr.playerMoves) {
+      arr.playerMoves[playerMovesKey as keyof playerMoves] = Math.floor(
+        Math.random() * 3 + 1
+      );
+    }
+
+    for (let key in arr.playerMoves) {
+      const _key = key as keyof playerMoves;
+      let _playerMovesKey: keyof playerMoves;
+
+      if (arr.playerMoves[_key] === 1) {
+        for (let playerMovesKey in arr.playerMoves) {
+          _playerMovesKey = playerMovesKey as keyof playerMoves;
+
+          if (arr.playerMoves[_playerMovesKey] === 3) {
+            arr.playerVersus[_key][_playerMovesKey]++;
+          }
         }
-        if (arr[0].pValues[1] === 3) {
-          arr[0].p[i][1]++;
+      } else if (arr.playerMoves[_key] === 2) {
+        for (let playerMovesKey in arr.playerMoves) {
+          _playerMovesKey = playerMovesKey as keyof playerMoves;
+
+          if (arr.playerMoves[_playerMovesKey] === 1) {
+            arr.playerVersus[_key][_playerMovesKey]++;
+          }
         }
-        if (arr[0].pValues[2] === 3) {
-          arr[0].p[i][2]++;
-        }
-        if (arr[0].pValues[3] === 3) {
-          arr[0].p[i][3]++;
-        }
-      } else if (arr[0].pValues[i] === 2) {
-        if (arr[0].pValues[0] === 1) {
-          arr[0].p[i][0]++;
-        }
-        if (arr[0].pValues[1] === 1) {
-          arr[0].p[i][1]++;
-        }
-        if (arr[0].pValues[2] === 1) {
-          arr[0].p[i][2]++;
-        }
-        if (arr[0].pValues[3] === 1) {
-          arr[0].p[i][3]++;
-        }
-      } else if (arr[0].pValues[i] === 3) {
-        if (arr[0].pValues[0] === 2) {
-          arr[0].p[i][0]++;
-        }
-        if (arr[0].pValues[1] === 2) {
-          arr[0].p[i][1]++;
-        }
-        if (arr[0].pValues[2] === 2) {
-          arr[0].p[i][2]++;
-        }
-        if (arr[0].pValues[3] === 2) {
-          arr[0].p[i][3]++;
+      } else if (arr.playerMoves[_key] === 3) {
+        for (let playerMovesKey in arr.playerMoves) {
+          _playerMovesKey = playerMovesKey as keyof playerMoves;
+
+          if (arr.playerMoves[_playerMovesKey] === 2) {
+            arr.playerVersus[_key][_playerMovesKey]++;
+          }
         }
       }
     }
     arrItr[j] = JSON.parse(JSON.stringify(arr));
-    console.log(arr);
   }
-  console.log(arrItr);
   res.send(arrItr);
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Listening on ${process.env.PORT}`);
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Listening on ${process.env.PORT || 3000}`);
 });
