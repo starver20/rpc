@@ -37,7 +37,7 @@ export const startGame = (req: Request, res: Response) => {
     }
 
     playerResult = result(playerResult);
-
+    console.log(playerResult);
     playerIterations[j] = JSON.parse(JSON.stringify(playerResult));
   }
   res.send(playerIterations);
