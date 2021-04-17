@@ -77,6 +77,5 @@ const result = (playerResult: {
       }
     }
   }
-
   return playerResult;
 };
